@@ -1,10 +1,6 @@
 <template>
   <div class="container">
-    <!-- <h1>Profile</h1>
-        <h3>First Name:{{user.fname}}</h3>
-        <h3>Last Name:{{user.lname}}</h3>
-        <h3>Email:{{user.email}}</h3>
-        <h3>Age:{{user.age}}</h3> -->
+
     <div v-if="status" class="alert alert-primary" role="alert">failed</div>
     <form @submit.prevent="updateUser()" class="form-inline">
       <div class="form-group">
@@ -32,15 +28,14 @@
           class="form-control"
           v-model="user.email"
           id="email"
+          required
         />
       </div>
       <div class="form-group">
         <label class="sr-only" for="pwd">Age</label>
         <input type="text" class="form-control" v-model="user.age" id="pwd" />
       </div>
-      <div class="form-group">
-        <input type="submit" class="form-control" value="submit" />
-      </div>
+        <button type="submit" class=" btn-lg btn-primary" value="update">Update </button>
     </form>
   </div>
 </template>
@@ -53,13 +48,20 @@ export default {
     return {
       user: null,
       status: null,
+       API:process.env.VUE_APP_API
     };
   },
   methods: {
     updateUser() {
       console.log(this.users);
+      var user = {
+        "fname":this.user.fname,
+        "lname":this.user.lname,
+        "email":this.user.email,
+        "age":Number.parseInt(this.user.age)
+      }
       axios
-        .put(`http://localhost:3000/api/users/${this.user._id}`, this.user)
+        .put(`/v1/users/${this.user._id}`, user)
         .then((res) => {
           if (res.status == 200) {
             this.$router.go(-1)
@@ -73,7 +75,7 @@ export default {
     },
     fetchUser() {
       axios
-        .get(`http://localhost:3000/api/users/${this.$route.params.id}`)
+        .get(`/v1/users/${this.$route.params.id}`)
         .then((res) => {
           console.log(res);
 
